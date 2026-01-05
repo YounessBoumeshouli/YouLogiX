@@ -1,1 +1,5 @@
 .env
+app/__pycache__
+app/db/__pycache__
+tests/__pycache__
+__pycache__
