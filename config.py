@@ -9,5 +9,6 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"  # Load from .env automatically
-
+        extra = "ignore"   #ignore extra variables
+        case_sensitive = False #not senstive with uppercases
 settings = Settings()
