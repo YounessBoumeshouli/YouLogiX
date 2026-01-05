@@ -1,10 +1,30 @@
 version: "3.9"
 
 services:
+  postgres:
+    image: postgres:15
+    container_name: youlogix_postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   fastapi:
     build: .
     container_name: youlogix_fastapi_app
+    depends_on:
+      - postgres
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     volumes:
       - .:/app
+
+volumes:
+  pgdata:
