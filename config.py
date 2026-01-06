@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     db_name: str
 
     class Config:
-        env_file = ".env"  # Load from .env automatically
-        extra = "ignore"   #ignore extra variables
-        case_sensitive = False #not senstive with uppercases
+        env_file = ".env"
+        extra = "ignore"
+        case_sensitive = False
 settings = Settings()
