@@ -1,4 +1,5 @@
 from enum import Enum
 
-EnumVehicule = Enum('EnumVehicule', ['CAR', 'MOTORBIKE'])
-
+class EnumVehicule(str, Enum):
+    CAR = "CAR"
+    MOTORBIKE = "MOTORBIKE"
