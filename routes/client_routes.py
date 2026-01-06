@@ -6,5 +6,5 @@ from controllers.client_controller import fetch_users
 router = APIRouter()
 
 @router.get("/clients")
-def read_users(db: Session = Depends(get_db)):
-    return fetch_users(db)
+def read_users():
+    return {"message": "This route is running"}
