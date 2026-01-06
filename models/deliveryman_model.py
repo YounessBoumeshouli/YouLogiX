@@ -1,6 +1,4 @@
-import User
-import Parcel
-from etities.deliveryman_entity import Delivery_man
+from entities.delivery_man_entity import Delivery_man
 from entities.enums.Parcel_enum import Parcel_enum
 from app.schemas.delivery_man import DeliveryManCreate
 import parcel_model
@@ -26,7 +24,7 @@ class DeliveryManModel:
             print("ℹ️ Les livreurs existent déjà, skipping seed.")
     def GetAll(self):
         return self.db.query(Delivery_man).all()
-    def get_all_percels(self):
+    def get_all_parcels(self):
         return self.db.query(Delivery_man).all()
     def get_client_adresse(self,parcel : Parcel):
         return self.db.query(Client.adress).where(id,parcel.c.client_id)

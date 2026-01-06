@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from routes.client_routes import router as client_router
-from routes.delivery_man_routes import router as delivery_man_router
+from routes.delivery_man_route import router as delivery_man_router
 import pytest
 
 app = FastAPI()
