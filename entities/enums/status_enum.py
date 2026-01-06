@@ -1,4 +1,8 @@
 from enum import Enum
 
-EnumStatus = Enum('EnumStatus', ['CREATED', 'COLLECTED', 'IN_STOCK', 'IN_TRANSIT','LIVRED'])
-
+class EnumStatus(str, Enum):
+    CREATED = 'CREATED'
+    COLLECTED = 'COLLECTED'
+    IN_STOCK = 'IN_STOCK'
+    IN_TRANSIT = 'IN_TRANSIT'
+    LIVRED = 'LIVRED'

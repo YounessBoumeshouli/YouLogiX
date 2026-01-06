@@ -1,6 +1,8 @@
 from fastapi import FastAPI
-from routes.client_routes import router as client_router
+# from routes.client_routes import router as client_router
 import pytest
+from app.db.database import engine, Base
+import entities
 
 app = FastAPI()
 @app.on_event("startup")
@@ -12,8 +14,12 @@ def run_tests_on_startup():
     else:
         print("✅ Tests réussis !")
 
-app.include_router(client_router)
-app.include_router(client_router)
+    Base.metadata.create_all(bind=engine)
+
+
+
+
+# app.include_router(client_router)
 
 @app.get("/")
 def read_root():
