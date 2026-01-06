@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-# from routes.client_routes import router as client_router
+from routes.client_routes import router as client_router
 import pytest
 from app.db.database import engine, Base
 import entities
@@ -19,7 +19,7 @@ def run_tests_on_startup():
 
 
 
-# app.include_router(client_router)
+app.include_router(client_router)
 
 @app.get("/")
 def read_root():

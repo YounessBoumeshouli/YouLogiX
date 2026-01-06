@@ -1,51 +1,38 @@
-from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
 
-from app.db.database import get_db
 from models.client_model import ClientModel
-from schemas.client_schema import (
-    ClientCreateSchema,
-    ClientResponseSchema,
-)
-
-router = APIRouter(prefix="/clients", tags=["Clients"])
-
-@router.post("", response_model=ClientResponseSchema, status_code=status.HTTP_201_CREATED)
-def create_client(payload: ClientCreateSchema, db: Session = Depends(get_db)):
-
-    model = ClientModel(db)
-
-    existing_client = model.get_by_email(payload.email)
-
-    if existing_client:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Client with this email already exists",
-        )
-
-    return model.create(**payload.model_dump())
+from schemas.client_schema import ClientCreateSchema
 
 
+class ClientController:
 
-@router.get("", response_model=list[ClientResponseSchema])
-def get_clients(db: Session = Depends(get_db)):
+    def __init__(self, db: Session):
+        self.model = ClientModel(db)
 
-    model = ClientModel(db)
-    return model.get_all()
+    # Create a client
 
+    def create_client(self, payload: ClientCreateSchema):
+        if self.model.get_by_email(payload.email):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Client with this email already exists",
+            )
 
+        return self.model.create(**payload.model_dump())
 
-@router.get("/{client_id}", response_model=ClientResponseSchema)
-def get_client_by_id(client_id: int, db: Session = Depends(get_db)):
+    # Get a list of all clients
 
-    model = ClientModel(db)
-    client = model.get_by_id(client_id)
+    def get_all_clients(self):
+        return self.model.get_all()
+    
+    # Get a single client
 
-    if not client:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Client not found",
-        )
-
-    return client
-
+    def get_client(self, client_id: int):
+        client = self.model.get_by_id(client_id)
+        if not client:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Client not found",
+            )
+        return client
