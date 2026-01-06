@@ -1,8 +1,11 @@
-from sqlalchemy import Column, Integer, String
-from app.DB.database import Base
+from sqlalchemy import Column, Integer, String, ForeignKey
+from app.db.database import Base
+from enums.vehicule_enum import EnumVehicule
 
 class Delivery_man(Base):
-    __tablename__ = "delivery_man"
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
+    __tablename__ = "delivery_men"
+
+    id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    address = Column(String, nullable=False)
+    vehicule = Column(EnumVehicule, nullable=False)
 

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from routes.client_routes import router as client_router
+import pytest
 
 app = FastAPI()
 @app.on_event("startup")
