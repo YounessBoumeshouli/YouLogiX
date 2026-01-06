@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String
-from app.db.database import Base
+from sqlalchemy import Column, Integer, String, ForeignKey
+from entities.user_entity import User
 
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
+class Client(User):
+    __tablename__ = "clients"
+
+    id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    address = Column(String, nullable=False)
