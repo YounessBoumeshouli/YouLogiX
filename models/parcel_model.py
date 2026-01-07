@@ -31,13 +31,27 @@ class ParcelModel:
         return parcel
 
 
-    def getParcelById(self, id):
+    def getParcelById(self, id) -> Parcel:
         return self.db.query(Parcel).where(Parcel.id == id).first()
     
 
-    def getAll(self):
+    def getAll(self) -> list[Parcel]:
         return self.db.query(Parcel).all()
     
+
+    
+    def updateParcel(self, parcel: Parcel, **kwargs):
+
+        for key, value in kwargs.items():
+            if hasattr(parcel, key):
+                setattr(parcel, key, value)
+
+        self.db.commit()
+        self.db.refresh(parcel)
+
+        return parcel
+    
+
 
     def updateParcelStatus(self, parcel_id, new_status) -> HistoricalStatus | None:
         parcel = self.getParcelById(parcel_id)
@@ -85,7 +99,7 @@ class ParcelModel:
                 self.db.add(new_parcel)
             self.db.commit()
 
-            
+
 
             for i in range(1, count + 1):
 

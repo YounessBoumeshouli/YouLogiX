@@ -5,6 +5,7 @@ from controllers.parcel_controller import ParcelController
 from schemas.parcel_schema import (
     ParcelCreateSchema,
     ParcelResponseSchema,
+    ParcelUpdateSchema
 )
 
 router = APIRouter(prefix="/parcels", tags=["Parcels"])
@@ -27,3 +28,10 @@ def get_parcel(db: Session = Depends(get_db)):
 def get_parcel(parcel_id: int, db: Session = Depends(get_db)):
     controller = ParcelController(db)
     return controller.get_parcel(parcel_id)
+
+
+
+@router.put("/{parcel_id}", response_model=ParcelResponseSchema)
+def update_parcel(parcel_id: int, payload: ParcelUpdateSchema, db: Session = Depends(get_db)):
+    controller = ParcelController(db)
+    return controller.update_parcel(parcel_id, payload)

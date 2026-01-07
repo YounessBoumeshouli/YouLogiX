@@ -3,7 +3,8 @@ from fastapi import HTTPException, status
 from random import randint
 
 from models.parcel_model import ParcelModel
-from schemas.parcel_schema import ParcelCreateSchema
+from entities.enums.status_enum import EnumStatus
+from schemas.parcel_schema import ParcelCreateSchema, ParcelUpdateSchema
 
 
 class ParcelController:
@@ -36,3 +37,25 @@ class ParcelController:
 
     def get_all_parcels(self):
         return self.model.getAll()
+    
+
+
+    # Update a parcel 
+
+    def update_parcel(self, parcel_id: int, payload: ParcelUpdateSchema):
+
+        parcel = self.model.getParcelById(parcel_id)
+
+        if not parcel:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Parcel not found"
+            )
+        
+        if parcel.status != EnumStatus.CREATED:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Can't update a parcel after it's been approved"
+            )
+
+        return self.model.updateParcel(parcel, **payload.model_dump(exclude_unset=True))
