@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class ParcelCreateSchema(BaseModel):
     description: str
@@ -7,6 +8,12 @@ class ParcelCreateSchema(BaseModel):
     idClient: int
     idRecipient: int
     DestinationCity: str
+
+class ParcelUpdateSchema(BaseModel):
+    description: Optional[str] = None
+    weight: Optional[float] = None
+    idRecipient: Optional[int] = None
+    DestinationCity: Optional[str] = None
 
 
 class ParcelSchema(BaseModel):
