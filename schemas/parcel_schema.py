@@ -4,14 +4,23 @@ class ParcelCreateSchema(BaseModel):
     description: str
     weight: float
     status: str
-    idDeliveryMan: str
     idClient: int
     idRecipient: int
     DestinationCity: str
-    code :str
 
 
-class ParcelResponseSchema(ParcelCreateSchema):
+class ParcelSchema(BaseModel):
+    description: str
+    weight: float
+    status: str
+    idDeliveryMan: int | None
+    idClient: int
+    idRecipient: int
+    DestinationCity: str
+    code: str
+
+
+class ParcelResponseSchema(ParcelSchema):
     id: int
 
     class Config:
