@@ -3,12 +3,16 @@ from sqlalchemy.orm.session import Session
 from entities.parcel_entity import Parcel
 
 from entities.enums.status_enum import EnumStatus
+from schemas import delivery_man
+
 
 class Parcel :
     def __init__(self, db: Session):
         self.db = db
     def getParcel(self,id):
         return self.db.query(Parcel).where(Parcel.c.id,id)
+    def getParcelByDeliveryMan(self, delivery_man_id):
+        return self.db.query(Parcel).where(delivery_man.c.id,delivery_man_id)
     def assignToDeliveryMan(self,parcel_id,delivery_man_id):
         return self.db.update(Parcel.c.delivery_man_id  , delivery_man_id).where(Parcel.c.id,id)
 

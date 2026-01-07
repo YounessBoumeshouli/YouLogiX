@@ -2,7 +2,6 @@ from fastapi import FastAPI
 
 from models.deliveryman_model import DeliveryManModel
 from routes.client_routes import router as client_router
-from routes.delivery_man_route import seed_delivery_men
 import pytest
 from app.db.database import engine, Base, SessionLocal
 import entities

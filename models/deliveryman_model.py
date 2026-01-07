@@ -6,6 +6,8 @@ from entities.enums.vehicule_enum import EnumVehicule
 from schemas.delivery_man import DeliveryManCreate
 import models.parcel_model as Parcel
 import models.client_model as Client
+from schemas.parcel_schema import ParcelResponseSchema
+
 
 class DeliveryManModel:
     def __init__(self, db: Session):
@@ -33,16 +35,7 @@ class DeliveryManModel:
     #     return self.db.query(DeliveryMan).all()
     def get_all_parcels(self):
         return self.db.query(DeliveryMan).all()
-    # def get_client_adresse(self,parcel : Parcel):
-    #     return self.db.query(Client.adress).where(id,parcel.c.client_id)
-    # def GetDisponibleDeliveryMan(self,parcel_id):
-    #     parcel =  Parcel.getParcel(parcel_id)
-    #     adress = get_client_adresse(parcel)
-    #     return self.db.query(DeliveryMan).where(DeliveryMan.adresse , adress).first()
-    #
-    # def assignParcel(self, parcel_id)->bool:
-    #     delivery_man = GetDisponibleDeliveryMan(self.db,parcel_id)
-    #     parcel =  parcel_model.assignToDeliveryMan(parcel_id,delivery_man.c.id)
+
     #
     # def deliveryMan_create(self,delivery_man_in: DeliveryManCreate)->bool:
     #     delivery_man_data = delivery_man_in.model_dump()

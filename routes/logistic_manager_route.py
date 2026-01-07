@@ -20,4 +20,8 @@ def seed_delivery_men():
 @router.post("/delivery_man/parcels", response_model=DeliveryManResponse)
 def showParcels(payload: DeliveryManCreate, db: Session = Depends(get_db)):
     controller = DeliveryManController(db)
+    return (controller.fetch_percels(payload)
+@router.post("/delivery_man/parcels/{parcel_id}/assign_to_delivery_man", response_model=DeliveryManResponse))
+def showParcels(payload: DeliveryManCreate, db: Session = Depends(get_db)):
+    controller = DeliveryManController(db)
     return controller.fetch_percels(payload)
