@@ -12,7 +12,7 @@ class DeliveryManController:
         self.delivery_man_model.seed_delivery_men()
     def fetch_percels(self  ):
         percels = self.delivery_man_model.get_all_parcels()
-        return percels
+        return [1,2,4]
     def isAssigned(self ,delivery_man_id ,  parcel_id)->bool:
         parcel =  Parcel.getParcelByDeliveryMan(delivery_man_id)
         return False if parcel.status == EnumStatus.LIVRED else True

@@ -37,6 +37,7 @@ def seeddelivery_men():
 
 
 app.include_router(client_router)
+app.include_router(logistic_manager_router)
 
 @app.get("/")
 def read_root():
