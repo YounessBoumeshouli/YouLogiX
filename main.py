@@ -1,7 +1,11 @@
 from fastapi import FastAPI
+
+from models.deliveryman_model import DeliveryManModel
 from routes.client_routes import router as client_router
-from routes.delivery_man_route import router as delivery_man_router
+from routes.delivery_man_route import seed_delivery_men
 import pytest
+from app.db.database import engine, Base, SessionLocal
+import entities
 
 app = FastAPI()
 @app.on_event("startup")
@@ -13,10 +17,26 @@ def run_tests_on_startup():
     else:
         print("✅ Tests réussis !")
 @app.on_event("startup")
-def seed_delivery_men():
-    delivery_man_router.seed_delivery_men()
+def seeddelivery_men():
+    Base.metadata.create_all(bind=engine)
 
-app.include_router(client_router)
+    # 2. Open a manual session
+    db = SessionLocal()
+    try:
+        print("🌱 Checking for seed data...")
+        # Pass the actual session 'db' to the model
+        model = DeliveryManModel(db)
+        model.seed_delivery_men()
+    except Exception as e:
+        print(f"❌ Seed error: {e}")
+    finally:
+        # 3. Close it manually since 'get_db' isn't handling it here
+        db.close()
+
+
+
+
+
 app.include_router(client_router)
 
 @app.get("/")

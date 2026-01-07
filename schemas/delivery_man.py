@@ -9,7 +9,7 @@ class DeliveryManBase(BaseModel):
 
 # Utilisé pour la création (POST) - On peut ajouter des champs obligatoires ici
 class DeliveryManCreate(DeliveryManBase):
-    password: str = Field(..., min_length=8)
+    adress: str = Field(..., min_length=8)
 
 # Utilisé pour la réponse (GET) - On ajoute l'ID et on active le mode ORM
 class DeliveryManResponse(DeliveryManBase):
