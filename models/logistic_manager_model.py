@@ -4,9 +4,11 @@ from sqlalchemy.orm.session import Session
 from entities.delivery_man_entity import DeliveryMan
 from entities.enums.status_enum import EnumStatus
 from entities.enums.vehicule_enum import EnumVehicule
+from entities.client_entity import Client
+from entities.parcel_entity import Parcel
 from schemas.delivery_man import DeliveryManCreate
-from models.parcel_model import Parcel
-import models.client_model as Client
+from models.parcel_model import ParcelModel
+import models.client_model as ClientModel
 
 from entities import LogisticsManager
 from entities.enums.vehicule_enum import EnumVehicule
@@ -28,32 +30,21 @@ class LogisticManagerModel():
     #     db.commit()
     #     db.refresh(db_delivery_man)
     #     return db_delivery_man
-    def seed_logistic_manager(self):
-        if self.db.query(LogisticsManager).count() == 0:
-            print("🌱 Initialisation des 10 livreurs...")
-            for i in range(1, 11):
-                new_man = DeliveryMan(
-                    first_name=f"Livreur {i}",
-                    last_name=f"Livreur {i}",
-                    email=f"delivery{i}@youlogix.com",
-                    password="hashed_password_example",
-                    address=f"{i} Rue de la Logistique",
-                    phone=f"06 449 9333{i}",
-                    vehicule=EnumVehicule.CAR if i % 2 == 0 else EnumVehicule.MOTORBIKE
-                )
-                self.db.add(new_man)
-            self.db.commit()
-            print("✅ 10 livreurs insérés avec succès.")
-        else:
-            print("ℹ️ Les livreurs existent déjà, skipping seed.")
-    def get_client_adresse(self,parcel : Parcel):
-        return self.db.query(Client.adress).where(id,parcel.c.client_id)
+    # Correct
+    def get_client_adresse(self, parcel: Parcel):
+        result =  self.db.query(Client.address).filter(Client.id == parcel.idClient).first()
+        return result[0]
     def GetDisponibleDeliveryMan(self,parcel_id):
-        parcel =  Parcel.getParcel(parcel_id)
-        adress = self.get_client_adresse(parcel)
-        return self.db.query(DeliveryMan).where(DeliveryMan.adresse , adress).first()
+        parcel_model  = ParcelModel(self.db)
+        parcel =  parcel_model.getParcel(parcel_id)
+        address = self.get_client_adresse(parcel)
+        return self.db.query(DeliveryMan).where(DeliveryMan.address == address).first()
+    def checkWeight(self):
+        pass
+    def checkCity(self):
+        pass
 
-    def assignParcel(self, parcel_id)->bool:
-        delivery_man = self.GetDisponibleDeliveryMan(self.db,parcel_id)
-        parcel_model  = Parcel(self.db)
-        parcel_model.assignToDeliveryMan(parcel_id,delivery_man.c.id)
+    def assignParcel(self, parcel_id):
+        delivery_man = self.GetDisponibleDeliveryMan(parcel_id)
+        parcel_model  = ParcelModel(self.db)
+        return parcel_model.assignToDeliveryMan(parcel_id,delivery_man.id)

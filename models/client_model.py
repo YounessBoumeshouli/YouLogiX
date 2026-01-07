@@ -27,21 +27,39 @@ class ClientModel:
         self.db.commit()
         self.db.refresh(client)
         return client
-    
-    
+
     def seed_clients(self):
         if self.db.query(Client).count() == 0:
-            print("🌱 Initialisation des 10 clients...")
-            for i in range(1, 11):
-                new_man = Client(
+            print("🌱 Initialisation des 10 clients avec zones...")
+
+            # Define the exact same zones as used for DeliveryMen
+            city_zones = {
+                "Marrakech": ["Menara", "Gueliz", "Medina", "Sidi Youssef"],
+                "Casablanca": ["Anfa", "Maarif", "Ain Diab", "Sidi Moumen"],
+                "Rabat": ["Agdal", "Hay Riad", "Hassan", "Yacoub El Mansour"]
+            }
+            cities = list(city_zones.keys())
+
+            for i in range(1, 11):  # Creating 10 clients
+                # Logic to cycle through cities and zones
+                city_index = (i - 1) // 4 % len(cities)
+                zone_index = (i - 1) % 4
+
+                current_city = cities[city_index]
+                current_zone = city_zones[current_city][zone_index]
+                full_address = f"{current_city} {current_zone}"
+
+                new_client = Client(
                     first_name=f"Client {i}",
                     last_name=f"Client {i}",
                     email=f"client{i}@youlogix.com",
                     password="hashed_password_example",
-                    address=f"{i} Rue de la Logistique - Rabat",
+                    # Now matches: "Marrakech Menara", "Marrakech Gueliz", etc.
+                    address=full_address,
                     phone=f"06 549 9333{i}"
                 )
-                self.db.add(new_man)
+                self.db.add(new_client)
+
             self.db.commit()
             print("✅ 10 clients insérés avec succès.")
         else:

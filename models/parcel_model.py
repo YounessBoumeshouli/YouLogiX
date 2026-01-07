@@ -2,14 +2,14 @@ from random import randint
 
 from sqlalchemy.orm.session import Session
 
-from entities import HistoricalStatus
+from entities import HistoricalStatus, Client
 from entities.parcel_entity import Parcel
 
 from entities.enums.status_enum import EnumStatus
 from schemas import delivery_man
+from random import randint, choice
 
-
-class Parcel :
+class ParcelModel :
     def __init__(self, db: Session):
         self.db = db
 
@@ -75,58 +75,56 @@ class Parcel :
 
         return history
 
-    
-    
-    def assignToDeliveryMan(self,parcel_id,delivery_man_id):
-        return self.db.update(Parcel.c.delivery_man_id  , delivery_man_id).where(Parcel.c.id,id)
-
-
-
-    
-    def seed_parcels(self, count : int = 10):
-
+    def assignToDeliveryMan(self, parcel_id, delivery_man_id):
+         self.db.query(Parcel).filter(Parcel.id == parcel_id).update(
+            {"idDeliveryMan": delivery_man_id}
+        )
+         self.db.commit()
+         return "parcel assinged to a delivery man successfully"
+    def seed_parcels(self, count: int = 10):
         if self.db.query(Parcel).count() == 0:
-            print("🌱 Initialisation des 10 colis...")
-            for i in range(1, count + 1):
+            # 1. Get all valid Client IDs currently in the database
+            client_ids = [c.id for c in self.db.query(Client.id).all()]
 
-                # Parcel
+            if not client_ids:
+                print("❌ Cannot seed parcels: No clients found in database!")
+                return
+
+            print(f"🌱 Initializing {count} parcels using Client IDs: {client_ids}")
+
+            city_zones = {
+                "Marrakech": ["Menara", "Gueliz", "Medina", "Sidi Youssef"],
+                "Casablanca": ["Anfa", "Maarif", "Ain Diab", "Sidi Moumen"],
+                "Rabat": ["Agdal", "Hay Riad", "Hassan", "Yacoub El Mansour"]
+            }
+            cities = list(city_zones.keys())
+
+            for i in range(1, count + 1):
+                city = cities[(i - 1) // 4 % len(cities)]
+                zone = city_zones[city][(i - 1) % 4]
+
+                # 2. Pick a random ID from the ACTUAL list of clients
+                random_client_id = choice(client_ids)
 
                 new_parcel = Parcel(
                     description=f"Parcel {i}",
-                    weight=randint(3, 50),
+                    weight=float(randint(3, 50)),
                     status=EnumStatus.CREATED,
-                    idClient=randint(11, 20),
-                    idRecipient=randint(11, 20),
+                    idClient=random_client_id,
+                    idRecipient=random_client_id,
                     idDeliveryMan=None,
-                    DestinationCity="Rabat",
-                    code=randint(1000, 99999)
+                    DestinationCity=f"{city} {zone}",
+                    code=str(randint(1000, 99999))
                 )
                 self.db.add(new_parcel)
-            self.db.commit()
-
-
-
-            for i in range(1, count + 1):
-
-                # Status History
-
-                new_status = HistoricalStatus(
-                    statut = EnumStatus.CREATED,
-                    idParcel = i
-                )
-                self.db.add(new_status)
 
             self.db.commit()
-            print("✅ 10 colis insérés avec succès.")
-        else:
-            print("ℹ️ Les colis existent déjà, skipping seed.")
-    def getParcel(self,id):
-        return self.db.query(Parcel).where(Parcel.c.id,id)
+            print("✅ Colis insérés avec succès.")
+    def getParcel(self, parcel_id):
+        return self.db.query(Parcel).filter(Parcel.id == parcel_id).first()
     def getParcelByDeliveryMan(self, delivery_man_id):
-        return self.db.query(Parcel).where(delivery_man.c.id,delivery_man_id)
-    def assignToDeliveryMan(self,parcel_id,delivery_man_id):
-        return self.db.update(Parcel.c.delivery_man_id  , delivery_man_id).where(Parcel.c.id,id)
+        return self.db.query(Parcel).where(delivery_man.id,delivery_man_id)
 
     def assignParcel(parcel_id)->bool:
-        parcel =  Parcel.getParcel(parcel_id)
+        parcel =  parcel_id.getParcel(parcel_id)
         return 0 if parcel.status == EnumStatus.LIVRED else 1

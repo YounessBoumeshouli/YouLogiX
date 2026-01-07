@@ -1,5 +1,6 @@
 from sqlalchemy.orm.session import Session
 
+from entities import LogisticsManager
 from entities.delivery_man_entity import DeliveryMan
 from entities.enums.status_enum import EnumStatus
 from entities.enums.vehicule_enum import EnumVehicule
@@ -14,29 +15,46 @@ class DeliveryManModel:
         self.db = db
 
     def seed_delivery_men(self):
+        # Check if DeliveryMan already exist to avoid UniqueViolation on email
         if self.db.query(DeliveryMan).count() == 0:
-            print("🌱 Initialisation des 10 livreurs...")
-            for i in range(1, 11):
+            print("🌱 Initialisation des livreurs avec zones...")
+
+            city_zones = {
+                "Marrakech": ["Menara", "Gueliz", "Medina", "Sidi Youssef"],
+                "Casablanca": ["Anfa", "Maarif", "Ain Diab", "Sidi Moumen"],
+                "Rabat": ["Agdal", "Hay Riad", "Hassan", "Yacoub El Mansour"]
+            }
+            cities = list(city_zones.keys())
+
+            for i in range(1, 13):
+                city_idx = (i - 1) // 4 % len(cities)
+                zone_idx = (i - 1) % 4
+
+                city = cities[city_idx]
+                zone = city_zones[city][zone_idx]
+
                 new_man = DeliveryMan(
                     first_name=f"Livreur {i}",
                     last_name=f"Livreur {i}",
                     email=f"delivery{i}@youlogix.com",
                     password="hashed_password_example",
-                    address=f"{i} Rue de la Logistique",
+                    address=f"{city} {zone}",  # "Marrakech Menara" format
                     phone=f"06 449 9333{i}",
                     vehicule=EnumVehicule.CAR if i % 2 == 0 else EnumVehicule.MOTORBIKE
                 )
                 self.db.add(new_man)
-            self.db.commit()
-            print("✅ 10 livreurs insérés avec succès.")
+
+            try:
+                self.db.commit()
+                print("✅ 12 livreurs insérés avec succès.")
+            except Exception as e:
+                self.db.rollback()
+                print(f"❌ Erreur lors du seed: {e}")
         else:
             print("ℹ️ Les livreurs existent déjà, skipping seed.")
-    # def GetAll(self):
-    #     return self.db.query(DeliveryMan).all()
     def get_all_parcels(self):
         return self.db.query(DeliveryMan).all()
 
-    #
     # def deliveryMan_create(self,delivery_man_in: DeliveryManCreate)->bool:
     #     delivery_man_data = delivery_man_in.model_dump()
     #     db_delivery_man = Client(

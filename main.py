@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 
 from models.deliveryman_model import DeliveryManModel
+from models.parcel_model import ParcelModel
+from models.client_model import ClientModel
 from routes.client_routes import router as client_router
 from routes.logistic_manager_route import router as logistic_manager_router
 import pytest
@@ -27,6 +29,10 @@ def seeddelivery_men():
         # Pass the actual session 'db' to the model
         model = DeliveryManModel(db)
         model.seed_delivery_men()
+        c_model = ClientModel(db)
+        c_model.seed_clients()
+        p_model = ParcelModel(db)
+        p_model.seed_parcels()
     except Exception as e:
         print(f"❌ Seed error: {e}")
     finally:
