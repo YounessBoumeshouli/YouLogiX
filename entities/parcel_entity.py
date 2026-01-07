@@ -9,7 +9,7 @@ class Parcel(Base):
     description = Column(Text, nullable=False)
     weight = Column(Float, nullable=False)
     status = Column(Enum(EnumStatus, name="status_enum"), nullable=False)
-    idDeliveryMan = Column(Integer, ForeignKey("delivery_men.id"), nullable=False)
+    idDeliveryMan = Column(Integer, ForeignKey("delivery_men.id"))
     idClient = Column(Integer, ForeignKey("clients.id"), nullable=False)
     idRecipient = Column(Integer, ForeignKey("clients.id"), nullable=False)
     DestinationCity = Column(String, nullable=False)
