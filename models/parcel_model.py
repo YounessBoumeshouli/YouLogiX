@@ -1,13 +1,18 @@
-from sqlalchemy.orm import Session
-from entities.parcel_entity import Parcel
-from entities.enums.status_enum import EnumStatus
 from random import randint
-from entities.historical_status_entity import HistoricalStatus
 
-class ParcelModel:
+from sqlalchemy.orm.session import Session
 
+from entities import HistoricalStatus
+from entities.parcel_entity import Parcel
+
+from entities.enums.status_enum import EnumStatus
+from schemas import delivery_man
+
+
+class Parcel :
     def __init__(self, db: Session):
         self.db = db
+
 
 
     def createParcel(self, description: str, weight: float, status: str, idClient: int, idRecipient: int, DestinationCity: str, code: str):
@@ -115,3 +120,13 @@ class ParcelModel:
             print("✅ 10 colis insérés avec succès.")
         else:
             print("ℹ️ Les colis existent déjà, skipping seed.")
+    def getParcel(self,id):
+        return self.db.query(Parcel).where(Parcel.c.id,id)
+    def getParcelByDeliveryMan(self, delivery_man_id):
+        return self.db.query(Parcel).where(delivery_man.c.id,delivery_man_id)
+    def assignToDeliveryMan(self,parcel_id,delivery_man_id):
+        return self.db.update(Parcel.c.delivery_man_id  , delivery_man_id).where(Parcel.c.id,id)
+
+    def assignParcel(parcel_id)->bool:
+        parcel =  Parcel.getParcel(parcel_id)
+        return 0 if parcel.status == EnumStatus.LIVRED else 1

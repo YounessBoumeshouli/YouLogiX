@@ -17,7 +17,11 @@ def seed_delivery_men():
     Controller = DeliveryManController(db)
     Controller.seed_delivery_men()
     return {"message": "This route is running"}
-@router.post("/delivery_man/parcels", response_model=DeliveryManResponse)
-def showParcels(payload: DeliveryManCreate, db: Session = Depends(get_db)):
+@router.get("/delivery_man/parcels")
+def showParcels( db: Session = Depends(get_db)):
+    controller = DeliveryManController(db)
+    return controller.fetch_percels()
+@router.get("/delivery_man/parcels/{parcel_id}/assign_to_delivery_man", response_model=DeliveryManResponse)
+def showParcelsByDeliveryMan(payload: DeliveryManCreate, db: Session = Depends(get_db)):
     controller = DeliveryManController(db)
     return controller.fetch_percels(payload)
