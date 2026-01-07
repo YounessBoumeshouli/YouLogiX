@@ -10,5 +10,5 @@ class LogisticMangerController:
     def fetch_percels(self ):
         percels = self.logistic_manager_model.get_all_parcels()
         return percels
-    def assignParcel(self , payload : ParcelResponseSchema ):
-        self.logistic_manager_model.assignParcel(payload.id)
+    def assignParcel(self , parcel_id ):
+        self.logistic_manager_model.assignParcel(parcel_id)

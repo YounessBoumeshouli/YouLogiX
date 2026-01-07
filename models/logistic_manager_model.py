@@ -1,7 +1,4 @@
-import User
-import Parcel
-import DeliveryMan
-from app.schemas.delivery_man import DeliveryManCreate
+from schemas.delivery_man import DeliveryManCreate
 from sqlalchemy.orm.session import Session
 
 from entities.delivery_man_entity import DeliveryMan
@@ -15,7 +12,7 @@ from entities import LogisticsManager
 from entities.enums.vehicule_enum import EnumVehicule
 
 
-class LogisticManagerModel(User):
+class LogisticManagerModel():
     def __init__(self, db: Session):
         self.db = db
 

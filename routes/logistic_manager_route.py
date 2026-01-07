@@ -2,7 +2,7 @@ import status
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.db.database import get_db
-from controllers.delivery_man_controller import DeliveryManController
+from controllers.logistic_manager_controller import LogisticMangerController
 from schemas.delivery_man  import (
     DeliveryManBase,
 DeliveryManCreate,
@@ -21,7 +21,7 @@ def seed_delivery_men():
 def showParcels( db: Session = Depends(get_db)):
     controller = DeliveryManController(db)
     return controller.fetch_percels()
-@router.get("/delivery_man/parcels/{parcel_id}/assign_to_delivery_man", response_model=DeliveryManResponse)
-def showParcelsByDeliveryMan(payload: DeliveryManCreate, db: Session = Depends(get_db)):
-    controller = DeliveryManController(db)
-    return controller.fetch_percels(payload)
+@router.get("/parcels/{parcel_id}/assign_to_delivery_man")
+def showParcelsByDeliveryMan( parcel_id , db: Session = Depends(get_db)):
+    controller = LogisticMangerController(db)
+    return controller.assignParcel(parcel_id)
