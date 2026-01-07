@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 
 from models.deliveryman_model import DeliveryManModel
+from models.client_model import ClientModel
+from models.parcel_model import ParcelModel
 from routes.client_routes import router as client_router
 from routes.delivery_man_route import seed_delivery_men
 from routes.parcel_routes import router as parcel_router
@@ -30,8 +32,14 @@ def seeddelivery_men():
     try:
         print("🌱 Checking for seed data...")
         # Pass the actual session 'db' to the model
-        model = DeliveryManModel(db)
-        model.seed_delivery_men()
+        model_1 = DeliveryManModel(db)
+        model_1.seed_delivery_men()
+
+        model_2 = ClientModel(db)
+        model_2.seed_clients()
+
+        model_3 = ParcelModel(db)
+        model_3.seed_parcels()
     except Exception as e:
         print(f"❌ Seed error: {e}")
     finally:

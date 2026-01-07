@@ -27,3 +27,22 @@ class ClientModel:
         self.db.commit()
         self.db.refresh(client)
         return client
+    
+    
+    def seed_clients(self):
+        if self.db.query(Client).count() == 0:
+            print("🌱 Initialisation des 10 clients...")
+            for i in range(1, 11):
+                new_man = Client(
+                    first_name=f"Client {i}",
+                    last_name=f"Client {i}",
+                    email=f"client{i}@youlogix.com",
+                    password="hashed_password_example",
+                    address=f"{i} Rue de la Logistique - Rabat",
+                    phone=f"06 549 9333{i}"
+                )
+                self.db.add(new_man)
+            self.db.commit()
+            print("✅ 10 clients insérés avec succès.")
+        else:
+            print("ℹ️ Les clients existent déjà, skipping seed.")
