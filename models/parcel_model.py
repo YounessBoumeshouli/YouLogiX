@@ -26,7 +26,7 @@ class ParcelModel:
         self.db.commit()
         self.db.refresh(parcel)
 
-        self.updateParcelStatus(parcel.id, EnumStatus.CREATED, EnumStatus.CREATED)
+        self.updateParcelStatus(parcel.id, EnumStatus.CREATED)
 
         return parcel
 
@@ -39,15 +39,14 @@ class ParcelModel:
         return self.db.query(Parcel).all()
     
 
-    def updateParcelStatus(self, parcel_id, old_status, new_status) -> HistoricalStatus | None:
+    def updateParcelStatus(self, parcel_id, new_status) -> HistoricalStatus | None:
         parcel = self.getParcelById(parcel_id)
 
         if not parcel:
             return None
         
         history = HistoricalStatus(
-            oldStatut = old_status,
-            newStatut = new_status,
+            statut = new_status,
             idParcel = parcel_id
         )
 
@@ -65,12 +64,15 @@ class ParcelModel:
 
 
     
-    def seed_parcels(self):
+    def seed_parcels(self, count : int = 10):
 
         if self.db.query(Parcel).count() == 0:
             print("🌱 Initialisation des 10 colis...")
-            for i in range(1, 11):
-                new_man = Parcel(
+            for i in range(1, count + 1):
+
+                # Parcel
+
+                new_parcel = Parcel(
                     description=f"Parcel {i}",
                     weight=randint(3, 50),
                     status=EnumStatus.CREATED,
@@ -80,7 +82,21 @@ class ParcelModel:
                     DestinationCity="Rabat",
                     code=randint(1000, 99999)
                 )
-                self.db.add(new_man)
+                self.db.add(new_parcel)
+            self.db.commit()
+
+            
+
+            for i in range(1, count + 1):
+
+                # Status History
+
+                new_status = HistoricalStatus(
+                    statut = EnumStatus.CREATED,
+                    idParcel = i
+                )
+                self.db.add(new_status)
+
             self.db.commit()
             print("✅ 10 colis insérés avec succès.")
         else:
