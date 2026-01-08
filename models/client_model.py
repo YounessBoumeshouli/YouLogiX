@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-from entities.client_entity import Client
 from loguru import logger
+
+from entities.client_entity import Client
 class ClientModel:
     def __init__(self, db: Session):
         self.db = db
@@ -26,6 +27,8 @@ class ClientModel:
         self.db.add(client)
         self.db.commit()
         self.db.refresh(client)
+        logger.info(f"CLIENT: client {client.id} is created successfully")
+
         return client
 
     def seed_clients(self):
@@ -60,7 +63,6 @@ class ClientModel:
                 self.db.add(new_client)
 
             self.db.commit()
-            logger.info("️ 10 clients insérés avec succès.")
 
         else:
             print("ℹ️ Les clients existent déjà, skipping seed.")

@@ -8,4 +8,5 @@ psycopg2-binary
 python-dotenv
 fastapi-users[sqlalchemy]
 loguru
-
+pytest
+httpx

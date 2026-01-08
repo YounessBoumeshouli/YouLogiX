@@ -23,6 +23,7 @@ def run_tests_on_startup():
     logger.add("logs/app.log", rotation="10 MB", retention="7 days", level="INFO")
     logger.add("logs/assignments.log", filter=lambda r: "ASSIGN" in r["message"])
     logger.add("logs/parcels.log", filter=lambda r: "PARCEL" in r["message"])
+    logger.add("logs/CLIENT.log", filter=lambda r: "CLIENT" in r["message"])
     logger.info("This will be saved to the file!")
     print("🚀 Vérification de la connexion base de données...")
     exit_code = pytest.main(["tests/test_connection.py"])

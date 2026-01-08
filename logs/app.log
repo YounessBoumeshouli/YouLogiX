@@ -72,3 +72,21 @@
 2026-01-08 13:54:22.273 | INFO     | main:run_tests_on_startup:26 - This will be saved to the file!
 2026-01-08 13:54:22.904 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.
 2026-01-08 13:54:26.901 | INFO     | models.parcel_model:assignToDeliveryMan:112 - ASSIGN: Parcel 10 given to 5
+2026-01-08 14:08:41.662 | INFO     | main:run_tests_on_startup:26 - This will be saved to the file!
+2026-01-08 14:08:42.078 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.
+2026-01-08 14:15:09.062 | INFO     | main:run_tests_on_startup:26 - This will be saved to the file!
+2026-01-08 14:15:09.608 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.
+2026-01-08 14:15:11.645 | INFO     | main:run_tests_on_startup:26 - This will be saved to the file!
+2026-01-08 14:15:12.137 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.
+2026-01-08 14:15:46.749 | INFO     | main:run_tests_on_startup:27 - This will be saved to the file!
+2026-01-08 14:15:47.191 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.
+2026-01-08 14:18:13.005 | INFO     | main:run_tests_on_startup:27 - This will be saved to the file!
+2026-01-08 14:18:13.447 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.
+2026-01-08 14:25:21.908 | INFO     | main:run_tests_on_startup:27 - This will be saved to the file!
+2026-01-08 14:25:22.323 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.
+2026-01-08 14:47:10.084 | INFO     | main:run_tests_on_startup:27 - This will be saved to the file!
+2026-01-08 14:47:10.579 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.
+2026-01-08 14:47:39.555 | INFO     | main:run_tests_on_startup:27 - This will be saved to the file!
+2026-01-08 14:47:39.981 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.
+2026-01-08 14:48:14.234 | INFO     | main:run_tests_on_startup:27 - This will be saved to the file!
+2026-01-08 14:48:14.786 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.

@@ -76,6 +76,8 @@ class ParcelModel :
     def updateParcel(self, parcel: Parcel, **kwargs):
         for key, value in kwargs.items():
             if hasattr(parcel, key):
+                logger.info(f"PARCEL: Parcel {parcel.id} ''s column {key}  is updated successfully")
+
                 setattr(parcel, key, value)
 
         self.db.commit()
@@ -99,7 +101,7 @@ class ParcelModel :
         self.db.add(history)
         self.db.commit()
         self.db.refresh(history)
-        logger.info(f"PARCEL: Parcel {parcel_id} 's status is updated successfully")
+        logger.info(f"PARCEL: Parcel {parcel_id} 's status is updated successfully from {parcel.status} to {new_status}  ")
         return history
 
 
@@ -116,7 +118,6 @@ class ParcelModel :
     
     def seed_parcels(self, count: int = 10):
         if self.db.query(Parcel).count() == 0:
-            # 1. Get all valid Client IDs currently in the database
             client_ids = [c.id for c in self.db.query(Client.id).all()]
 
             if not client_ids:
