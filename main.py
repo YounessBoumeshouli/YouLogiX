@@ -1,13 +1,19 @@
 from fastapi import FastAPI
+from app.db.database import engine, Base, SessionLocal
+import pytest
+import entities
+
+### Models
 
 from models.deliveryman_model import DeliveryManModel
 from models.parcel_model import ParcelModel
 from models.client_model import ClientModel
+
+### Routes
+
 from routes.client_routes import router as client_router
+from routes.parcel_routes import router as parcel_router
 from routes.logistic_manager_route import router as logistic_manager_router
-import pytest
-from app.db.database import engine, Base, SessionLocal
-import entities
 
 app = FastAPI()
 @app.on_event("startup")
@@ -45,6 +51,7 @@ def seeddelivery_men():
 
 app.include_router(client_router)
 app.include_router(logistic_manager_router)
+app.include_router(parcel_router)
 
 @app.get("/")
 def read_root():
