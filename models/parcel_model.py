@@ -36,17 +36,38 @@ class ParcelModel :
         return parcel
 
 
+
     def getParcelById(self, id) -> Parcel:
         return self.db.query(Parcel).where(Parcel.id == id).first()
     
+
 
     def getAll(self) -> list[Parcel]:
         return self.db.query(Parcel).all()
     
 
+
+    def getParcelsByClient(self, client_id: int) -> list[Parcel]:
+        return self.db.query(Parcel).where(Parcel.idClient == client_id).all()
+    
+
+
+    def getParcelsByRecipient(self, recipient_id: int) -> list[Parcel]:
+        return self.db.query(Parcel).where(Parcel.idRecipient == recipient_id).all()
+    
+
+
+    def getParcelsByDeliveryMan(self, delivery_id: int) -> list[Parcel]:
+        return self.db.query(Parcel).where(Parcel.idDeliveryMan == delivery_id).all()
+    
+
+
+    def listParcelsByCity(self, city: str) -> list[Parcel]:
+        return self.db.query(Parcel).where(Parcel.DestinationCity == city).all()
+
+
     
     def updateParcel(self, parcel: Parcel, **kwargs):
-
         for key, value in kwargs.items():
             if hasattr(parcel, key):
                 setattr(parcel, key, value)
@@ -75,12 +96,17 @@ class ParcelModel :
 
         return history
 
+
+
     def assignToDeliveryMan(self, parcel_id, delivery_man_id):
          self.db.query(Parcel).filter(Parcel.id == parcel_id).update(
             {"idDeliveryMan": delivery_man_id}
         )
          self.db.commit()
          return "parcel assinged to a delivery man successfully"
+    
+
+    
     def seed_parcels(self, count: int = 10):
         if self.db.query(Parcel).count() == 0:
             # 1. Get all valid Client IDs currently in the database
@@ -120,10 +146,13 @@ class ParcelModel :
 
             self.db.commit()
             print("✅ Colis insérés avec succès.")
+
+
+
     def getParcel(self, parcel_id):
         return self.db.query(Parcel).filter(Parcel.id == parcel_id).first()
-    def getParcelByDeliveryMan(self, delivery_man_id):
-        return self.db.query(Parcel).where(delivery_man.id,delivery_man_id)
+    
+
 
     def assignParcel(parcel_id)->bool:
         parcel =  parcel_id.getParcel(parcel_id)
