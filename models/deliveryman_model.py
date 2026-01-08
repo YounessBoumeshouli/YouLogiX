@@ -51,7 +51,7 @@ class DeliveryManModel:
                 self.db.rollback()
                 logger.error(f"❌ Erreur lors du seed: {e}")
         else:
-            logger.infos("️ Les livreurs existent déjà, skipping seed.")
+            logger.info("️ Les livreurs existent déjà, skipping seed.")
 
     def get_all_parcels(self):
         return self.db.query(DeliveryMan).all()

@@ -1,5 +1,5 @@
 from random import randint
-
+from loguru import logger
 from sqlalchemy.orm.session import Session
 
 from entities import HistoricalStatus, Client
@@ -32,6 +32,7 @@ class ParcelModel :
         self.db.refresh(parcel)
 
         self.updateParcelStatus(parcel.id, EnumStatus.CREATED)
+        logger.info(f"PARCEL: Parcel {parcel.id} 's created successfully")
 
         return parcel
 
@@ -98,7 +99,7 @@ class ParcelModel :
         self.db.add(history)
         self.db.commit()
         self.db.refresh(history)
-
+        logger.info(f"PARCEL: Parcel {parcel_id} 's status is updated successfully")
         return history
 
 
@@ -108,6 +109,7 @@ class ParcelModel :
             {"idDeliveryMan": delivery_man_id}
         )
          self.db.commit()
+         logger.info(f"ASSIGN: Parcel {parcel_id} given to {delivery_man_id}")
          return "parcel assinged to a delivery man successfully"
     
 
@@ -136,13 +138,14 @@ class ParcelModel :
 
                 # 2. Pick a random ID from the ACTUAL list of clients
                 random_client_id = choice(client_ids)
+                random_recipient_id = choice(client_ids)
 
                 new_parcel = Parcel(
                     description=f"Parcel {i}",
                     weight=float(randint(3, 50)),
                     status=EnumStatus.CREATED,
                     idClient=random_client_id,
-                    idRecipient=random_client_id,
+                    idRecipient=random_recipient_id,
                     idDeliveryMan=None,
                     DestinationCity=f"{city} {zone}",
                     code=str(randint(1000, 99999))
