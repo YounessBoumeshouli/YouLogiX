@@ -1,6 +1,6 @@
 from enum import Enum
 
-class EnumStatus(str, Enum):
+class   EnumStatus(str, Enum):
     CREATED = 'CREATED'
     APPROVED = 'APPROVED'
     COLLECTED = 'COLLECTED'
