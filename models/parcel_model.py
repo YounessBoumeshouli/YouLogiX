@@ -62,8 +62,13 @@ class ParcelModel :
     
 
 
-    def listParcelsByCity(self, city: str) -> list[Parcel]:
+    def getParcelsByCity(self, city: str) -> list[Parcel]:
         return self.db.query(Parcel).where(Parcel.DestinationCity == city).all()
+    
+
+
+    def getParcelsByStatus(self, status: str) -> list[Parcel]:
+        return self.db.query(Parcel).where(Parcel.status == status).all()
 
 
     

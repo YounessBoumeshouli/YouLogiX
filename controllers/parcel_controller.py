@@ -40,6 +40,21 @@ class ParcelController:
     
 
 
+    # Filter Parcels by city
+
+    def get_parcels_by_city(self, city_name: str):
+        return self.model.getParcelsByCity(city_name)
+    
+
+
+    # Filter parcels by status
+
+    def get_parcels_by_status(self, status: str):
+        upper_status = status.upper()
+        return self.model.getParcelsByStatus(upper_status)
+    
+
+
     # Update a parcel 
 
     def update_parcel(self, parcel_id: int, payload: ParcelUpdateSchema):
