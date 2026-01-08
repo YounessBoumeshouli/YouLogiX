@@ -6,5 +6,6 @@ uvicorn[standard]
 pytest
 psycopg2-binary
 python-dotenv
-status
 fastapi-users[sqlalchemy]
+loguru
+

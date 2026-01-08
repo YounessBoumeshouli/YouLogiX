@@ -15,10 +15,14 @@ from routes.client_routes import router as client_router
 from routes.parcel_routes import router as parcel_router
 from routes.logistic_manager_route import router as logistic_manager_router
 from routes.delivery_man_route import router as delivery_man_router
-
+from loguru import logger
 app = FastAPI()
 @app.on_event("startup")
+
 def run_tests_on_startup():
+    logger.add("logs/app.log", rotation="10 MB", retention="7 days", level="INFO")
+
+    logger.info("This will be saved to the file!")
     print("🚀 Vérification de la connexion base de données...")
     exit_code = pytest.main(["tests/test_connection.py"])
     if exit_code != 0:
