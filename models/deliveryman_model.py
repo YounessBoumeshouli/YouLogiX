@@ -66,3 +66,7 @@ class DeliveryManModel:
     #     self.db.commit()
     #     self.db.refresh(db_delivery_man)
     #     return db_delivery_man
+    def checkWeight(self):
+        pass
+    def checkCity(self):
+        pass
