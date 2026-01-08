@@ -1,5 +1,5 @@
 from sqlalchemy.orm.session import Session
-
+from loguru import logger
 from entities import LogisticsManager
 from entities.delivery_man_entity import DeliveryMan
 from entities.enums.status_enum import EnumStatus
@@ -46,12 +46,13 @@ class DeliveryManModel:
 
             try:
                 self.db.commit()
-                print("✅ 12 livreurs insérés avec succès.")
+                logger.success("✅ 12 livreurs insérés avec succès.")
             except Exception as e:
                 self.db.rollback()
-                print(f"❌ Erreur lors du seed: {e}")
+                logger.error(f"❌ Erreur lors du seed: {e}")
         else:
-            print("ℹ️ Les livreurs existent déjà, skipping seed.")
+            logger.infos("️ Les livreurs existent déjà, skipping seed.")
+
     def get_all_parcels(self):
         return self.db.query(DeliveryMan).all()
 
