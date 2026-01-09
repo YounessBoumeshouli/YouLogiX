@@ -9,6 +9,7 @@ def test_create_client():
         "first_name": "Amine",
         "last_name": "Logix",
         "email": "amine.test@example.com",
+        "role": "client",
         "phone": "0612345678",
         "password": "securepassword",
         "address": "123 Rue Marrakech"  # Ensure this matches your Schema!
@@ -24,6 +25,7 @@ def test_get_single_client():
         "first_name": "Test",
         "last_name": "User",
         "email": "unique@user.com",
+        "role": "client",
         "phone": "0000",
         "password": "password",
         "address": "Test City"
