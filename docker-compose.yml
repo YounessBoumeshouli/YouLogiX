@@ -28,6 +28,7 @@ services:
   tests:
     build: .
     command: pytest -vv --showlocals tests
+    container_name: youlogix_unit_tests
     depends_on:
       - postgres
     env_file: .env
