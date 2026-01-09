@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from entities.client_entity import Client
+from entities import Client, User
 
 class ClientModel:
     def __init__(self, db: Session):
@@ -14,13 +14,14 @@ class ClientModel:
     def get_by_email(self, email: str):
         return self.db.query(Client).filter(Client.email == email).first()
 
-    def create(self, first_name: str, last_name: str, email: str, address: str, phone: str, password: str):
+    def create(self, first_name: str, last_name: str, email: str, address: str, phone: str, password: str, role: str):
         client = Client(
             first_name=first_name,
             last_name=last_name,
             email=email,
             address=address,
             phone=phone,
+            role=role,
             password=password
         )
         self.db.add(client)
@@ -53,10 +54,11 @@ class ClientModel:
                     first_name=f"Client {i}",
                     last_name=f"Client {i}",
                     email=f"client{i}@youlogix.com",
-                    password="hashed_password_example",
+                    password=f"password {i}",
                     # Now matches: "Marrakech Menara", "Marrakech Gueliz", etc.
                     address=full_address,
-                    phone=f"06 549 9333{i}"
+                    phone=f"06 649 9333{i}",
+                    role="client"
                 )
                 self.db.add(new_client)
 

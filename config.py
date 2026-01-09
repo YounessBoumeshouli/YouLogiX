@@ -7,6 +7,10 @@ class Settings(BaseSettings):
     db_port: int
     db_name: str
 
+    secret_key: str
+    algorithm: str
+    access_token_expire_minutes: int
+
     class Config:
         env_file = ".env"
         extra = "ignore"

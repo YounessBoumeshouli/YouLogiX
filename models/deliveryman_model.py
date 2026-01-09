@@ -2,6 +2,7 @@ from sqlalchemy.orm.session import Session
 from loguru import logger
 from entities import LogisticsManager
 from entities.delivery_man_entity import DeliveryMan
+from entities import User
 from entities.enums.status_enum import EnumStatus
 from entities.enums.vehicule_enum import EnumVehicule
 from schemas.delivery_man import DeliveryManCreate
@@ -13,6 +14,23 @@ from schemas.parcel_schema import ParcelResponseSchema
 class DeliveryManModel:
     def __init__(self, db: Session):
         self.db = db
+
+    def create(self, first_name: str, last_name: str, email: str, address: str, phone: str, password: str, role: str, vehicule: str):
+        delivery_man = DeliveryMan(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            address=address,
+            phone=phone,
+            role=role,
+            password=password,
+            vehicule=vehicule
+        )
+        self.db.add(delivery_man)
+        self.db.commit()
+        self.db.refresh(delivery_man)
+        return delivery_man
+
 
     def seed_delivery_men(self):
         # Check if DeliveryMan already exist to avoid UniqueViolation on email
@@ -33,13 +51,15 @@ class DeliveryManModel:
                 city = cities[city_idx]
                 zone = city_zones[city][zone_idx]
 
+
                 new_man = DeliveryMan(
                     first_name=f"Livreur {i}",
                     last_name=f"Livreur {i}",
                     email=f"delivery{i}@youlogix.com",
-                    password="hashed_password_example",
+                    phone=f"06 549 9333{i}",
+                    password=f"password {i}",
+                    role="delivery_man",
                     address=f"{city} {zone}",  # "Marrakech Menara" format
-                    phone=f"06 449 9333{i}",
                     vehicule=EnumVehicule.CAR if i % 2 == 0 else EnumVehicule.MOTORBIKE
                 )
                 self.db.add(new_man)
@@ -51,7 +71,7 @@ class DeliveryManModel:
                 self.db.rollback()
                 logger.error(f"❌ Erreur lors du seed: {e}")
         else:
-            logger.infos("️ Les livreurs existent déjà, skipping seed.")
+            logger.info("️ Les livreurs existent déjà, skipping seed.")
 
     def get_all_parcels(self):
         return self.db.query(DeliveryMan).all()

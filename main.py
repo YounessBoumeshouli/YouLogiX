@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from app.db.database import engine, Base, SessionLocal
 import pytest
 import entities
@@ -11,6 +11,7 @@ from models.client_model import ClientModel
 
 ### Routes
 
+from routes.auth_routes import router as auth_router
 from routes.client_routes import router as client_router
 from routes.parcel_routes import router as parcel_router
 from routes.logistic_manager_route import router as logistic_manager_router
@@ -54,10 +55,18 @@ def seeddelivery_men():
 
 
 
+app.include_router(auth_router)
 app.include_router(client_router)
 app.include_router(parcel_router)
 app.include_router(logistic_manager_router)
 app.include_router(delivery_man_router)
+
+
+# @app.get("/admin/dashboard")
+# async def admin_dashboard(
+#     user: User = Depends(require_role("admin"))
+# ):
+#     return {"message": "Welcome admin"}
 
 @app.get("/")
 def read_root():
