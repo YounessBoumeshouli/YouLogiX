@@ -1,17 +1,12 @@
-from sqlalchemy import text
-from app.db.database import SessionLocal
-import pytest
+from app.db.database import Base
+from sqlalchemy import inspect
+from tests.conftest import engine  # Import the test engine
+
 
 def test_database_connection():
-    db = SessionLocal()
-    try:
-        result = db.execute(text("SELECT 1"))
-        value = result.scalar()
+    # Use the inspector to see if tables were created in the test sqlite
+    inspector = inspect(engine)
+    tables = inspector.get_table_names()
 
-        assert value == 1
-        print("\n✅ Connexion à la base de données réussie !")
-
-    except Exception as e:
-        pytest.fail(f"❌ Échec de la connexion à la base de données : {e}")
-    finally:
-        db.close()
+    assert "users" in tables
+    assert "clients" in tables

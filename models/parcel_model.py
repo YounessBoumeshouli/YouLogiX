@@ -1,5 +1,5 @@
 from random import randint
-
+from loguru import logger
 from sqlalchemy.orm.session import Session
 
 from entities import HistoricalStatus, Client
@@ -15,7 +15,7 @@ class ParcelModel :
 
 
 
-    def createParcel(self, description: str, weight: float, status: str, idClient: int, idRecipient: int, DestinationCity: str, code: str):
+    def createParcel(self, description: str, weight: float, idClient: int, idRecipient: int, DestinationCity: str, code: str , status  :EnumStatus =  EnumStatus.CREATED):
         parcel = Parcel(
             description = description,
             weight = weight,
@@ -32,6 +32,7 @@ class ParcelModel :
         self.db.refresh(parcel)
 
         self.updateParcelStatus(parcel.id, EnumStatus.CREATED)
+        logger.info(f"PARCEL: Parcel {parcel.id} 's created successfully")
 
         return parcel
 
@@ -75,6 +76,8 @@ class ParcelModel :
     def updateParcel(self, parcel: Parcel, **kwargs):
         for key, value in kwargs.items():
             if hasattr(parcel, key):
+                logger.info(f"PARCEL: Parcel {parcel.id} ''s column {key}  is updated successfully")
+
                 setattr(parcel, key, value)
 
         self.db.commit()
@@ -98,7 +101,7 @@ class ParcelModel :
         self.db.add(history)
         self.db.commit()
         self.db.refresh(history)
-
+        logger.info(f"PARCEL: Parcel {parcel_id} 's status is updated successfully from {parcel.status} to {new_status}  ")
         return history
 
 
@@ -108,13 +111,13 @@ class ParcelModel :
             {"idDeliveryMan": delivery_man_id}
         )
          self.db.commit()
+         logger.info(f"ASSIGN: Parcel {parcel_id} given to {delivery_man_id}")
          return "parcel assinged to a delivery man successfully"
     
 
     
     def seed_parcels(self, count: int = 10):
         if self.db.query(Parcel).count() == 0:
-            # 1. Get all valid Client IDs currently in the database
             client_ids = [c.id for c in self.db.query(Client.id).all()]
 
             if not client_ids:
@@ -136,13 +139,14 @@ class ParcelModel :
 
                 # 2. Pick a random ID from the ACTUAL list of clients
                 random_client_id = choice(client_ids)
+                random_recipient_id = choice(client_ids)
 
                 new_parcel = Parcel(
                     description=f"Parcel {i}",
                     weight=float(randint(3, 50)),
                     status=EnumStatus.CREATED,
                     idClient=random_client_id,
-                    idRecipient=random_client_id,
+                    idRecipient=random_recipient_id,
                     idDeliveryMan=None,
                     DestinationCity=f"{city} {zone}",
                     code=str(randint(1000, 99999))

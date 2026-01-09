@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from pydantic import ConfigDict
 class ClientCreateSchema(BaseModel):
     first_name: str
     last_name: str
@@ -11,6 +11,4 @@ class ClientCreateSchema(BaseModel):
 
 class ClientResponseSchema(ClientCreateSchema):
     id: int
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
