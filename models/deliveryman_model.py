@@ -40,7 +40,6 @@ class DeliveryManModel:
 
 
     def seed_delivery_men(self):
-        # Check if DeliveryMan already exist to avoid UniqueViolation on email
         if self.db.query(DeliveryMan).count() == 0:
             print("🌱 Initialisation des livreurs avec zones...")
 

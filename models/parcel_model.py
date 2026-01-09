@@ -121,10 +121,10 @@ class ParcelModel :
             client_ids = [c.id for c in self.db.query(Client.id).all()]
 
             if not client_ids:
-                print("❌ Cannot seed parcels: No clients found in database!")
+                print(" Cannot seed parcels: No clients found in database!")
                 return
 
-            print(f"🌱 Initializing {count} parcels using Client IDs: {client_ids}")
+
 
             city_zones = {
                 "Marrakech": ["Menara", "Gueliz", "Medina", "Sidi Youssef"],
@@ -137,7 +137,6 @@ class ParcelModel :
                 city = cities[(i - 1) // 4 % len(cities)]
                 zone = city_zones[city][(i - 1) % 4]
 
-                # 2. Pick a random ID from the ACTUAL list of clients
                 random_client_id = choice(client_ids)
                 random_recipient_id = choice(client_ids)
 
@@ -154,7 +153,7 @@ class ParcelModel :
                 self.db.add(new_parcel)
 
             self.db.commit()
-            print("✅ Colis insérés avec succès.")
+            print(" Colis insérés avec succès.")
 
 
 

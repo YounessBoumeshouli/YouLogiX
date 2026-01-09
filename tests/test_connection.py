@@ -7,7 +7,6 @@ def test_database_connection():
     
     Base.metadata.create_all(engine)
 
-    # Use the inspector to see if tables were created in the test sqlite
     inspector = inspect(engine)
     tables = inspector.get_table_names()
 
