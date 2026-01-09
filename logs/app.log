@@ -321,3 +321,8 @@
 2026-01-09 10:14:26.944 | INFO     | models.deliveryman_model:seed_delivery_men:54 - ️ Les livreurs existent déjà, skipping seed.
 2026-01-09 10:14:26.948 | INFO     | main:seed_database:32 - ✅ Seeding complete.
 2026-01-09 10:14:26.949 | INFO     | main:lifespan:50 - 🚀 YouLogix API is up and running!
+2026-01-09 10:21:03.939 | INFO     | main:lifespan:52 - 🛑 App stopping...
+2026-01-09 10:21:47.762 | INFO     | main:seed_database:28 - 🌱 Seeding database...
+2026-01-09 10:21:47.774 | SUCCESS  | models.deliveryman_model:seed_delivery_men:49 - ✅ 12 livreurs insérés avec succès.
+2026-01-09 10:21:47.795 | INFO     | main:seed_database:32 - ✅ Seeding complete.
+2026-01-09 10:21:47.795 | INFO     | main:lifespan:50 - 🚀 YouLogix API is up and running!
