@@ -1,5 +1,0 @@
-2026-01-08 13:22:16.773 | INFO     | models.parcel_model:assignToDeliveryMan:112 - ASSIGN: Parcel 2 given to 1
-2026-01-08 13:33:42.750 | INFO     | models.parcel_model:assignToDeliveryMan:112 - ASSIGN: Parcel 6 given to 1
-2026-01-08 13:46:05.431 | INFO     | models.parcel_model:assignToDeliveryMan:112 - ASSIGN: Parcel 4 given to 1
-2026-01-08 13:48:19.269 | INFO     | models.parcel_model:assignToDeliveryMan:112 - ASSIGN: Parcel 10 given to 1
-2026-01-08 13:54:26.901 | INFO     | models.parcel_model:assignToDeliveryMan:112 - ASSIGN: Parcel 10 given to 5

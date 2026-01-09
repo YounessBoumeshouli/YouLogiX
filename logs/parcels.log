@@ -1,2 +1,0 @@
-2026-01-09 09:05:20.345 | INFO     | models.parcel_model:updateParcelStatus:104 - PARCEL: Parcel 12 's status is updated successfully from EnumStatus.CREATED to EnumStatus.CREATED  
-2026-01-09 09:05:20.347 | INFO     | models.parcel_model:createParcel:35 - PARCEL: Parcel 12 's created successfully
