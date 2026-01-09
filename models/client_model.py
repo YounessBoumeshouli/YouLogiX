@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from loguru import logger
 from entities import Client, User
 
-from entities.client_entity import Client
+
 class ClientModel:
     def __init__(self, db: Session):
         self.db = db
