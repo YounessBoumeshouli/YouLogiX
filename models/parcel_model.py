@@ -15,7 +15,7 @@ class ParcelModel :
 
 
 
-    def createParcel(self, description: str, weight: float, status: str, idClient: int, idRecipient: int, DestinationCity: str, code: str):
+    def createParcel(self, description: str, weight: float, idClient: int, idRecipient: int, DestinationCity: str, code: str , status  :EnumStatus =  EnumStatus.CREATED):
         parcel = Parcel(
             description = description,
             weight = weight,
