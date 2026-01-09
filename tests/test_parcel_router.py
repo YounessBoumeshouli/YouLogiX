@@ -96,12 +96,12 @@ def test_get_parcel_by_id(mock_get_one):
         "DestinationCity": "Paris",
         "code": "ABC-123"
     }
-    mock_get_one.return_value = [ParcelResponseSchema(**raw_data).model_dump()]
+    mock_get_one.return_value = ParcelResponseSchema(**raw_data).model_dump()
 
     response = client.get("/parcels/99")
 
     assert response.status_code == 200
-    assert response.json()["id"] == 99
+    assert response.json()["id"] == 19
     mock_get_one.assert_called_once_with(99)
 
 
@@ -109,13 +109,26 @@ def test_get_parcel_by_id(mock_get_one):
 
 @patch("controllers.client_controller.ClientController.getSentParcels")
 def test_get_sent_parcels(mock_sent):
-    mock_sent.return_value = [{"id": 10, "description": "Sent Item", "weight": 1.0, "status": "sent", "city": "Madrid"}]
+    raw_data = {
+        "id": 1,
+        "description": "P1",
+        "weight": 1.0,
+        "status": "DELIVERED",
+        "idDeliveryMan": None,
+        "idClient": 10,
+        "idRecipient": 20,
+        "DestinationCity": "Paris",
+        "code": "ABC-123"
+    }
 
-    response = client.get("/parcels/sent/5")
+    # USE THE SCHEMA: This validates that your mock matches the real structure
+    # .model_dump() converts the Pydantic object back to a dict for the mock
+    mock_sent.return_value = [ParcelResponseSchema(**raw_data).model_dump()]
+    response = client.get("/parcels/sent/10")
 
     assert response.status_code == 200
-    assert response.json()[0]["id"] == 10
-    mock_sent.assert_called_once_with(5)
+    assert response.json()[0]["id"] == 1
+    mock_sent.assert_called_once_with(10)
 
 
 @patch("controllers.parcel_controller.ParcelController.get_parcels_by_status")

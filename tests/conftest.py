@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.db.database import Base, get_db
 from main import app
-
+import uuid
 # Create engine once
 engine = create_engine("sqlite:///./test.db", connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -12,13 +12,17 @@ from entities.client_entity import Client
 
 @pytest.fixture
 def valid_client(db_session):
+    # Now uuid will work!
+    unique_email = f"test_{uuid.uuid4().hex[:6]}@example.com"
+
     new_client = Client(
         first_name="Anas",
         last_name="Bennani",
         phone="0600000000",
-        email="anas.test@example.com",
+        email=unique_email,
         password="hashed_password_123",
-        address="Marrakech, Guiliz"
+        address="123 Rue Marrakech",
+        role="client"  # Ensure this matches your DB schema requirement
     )
     db_session.add(new_client)
     db_session.commit()
