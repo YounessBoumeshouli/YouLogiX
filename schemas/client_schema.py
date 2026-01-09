@@ -6,7 +6,6 @@ class ClientCreateSchema(BaseModel):
     email: str
     address: str
     phone: str
-    password: str
 
 
 class ClientResponseSchema(ClientCreateSchema):

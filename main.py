@@ -1,9 +1,11 @@
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from loguru import logger
+from fastapi import FastAPI, Depends
+from app.db.database import engine, Base, SessionLocal
 import pytest
 
 from app.db.database import engine, Base, SessionLocal
+from routes.auth_routes import router as auth_router
 from routes.client_routes import router as client_router
 from routes.parcel_routes import router as parcel_router
 from routes.logistic_manager_route import router as logistic_manager_router
@@ -54,11 +56,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.include_router(auth_router)
 app.include_router(client_router)
 app.include_router(parcel_router)
 app.include_router(logistic_manager_router)
 app.include_router(delivery_man_router)
 
+
+# @app.get("/admin/dashboard")
+# async def admin_dashboard(
+#     user: User = Depends(require_role("admin"))
+# ):
+#     return {"message": "Welcome admin"}
 
 @app.get("/")
 def read_root():
