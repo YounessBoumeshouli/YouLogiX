@@ -85,7 +85,18 @@ def test_get_all_parcels(mock_get_all):
 
 @patch("controllers.parcel_controller.ParcelController.get_parcel")
 def test_get_parcel_by_id(mock_get_one):
-    mock_get_one.return_value = {"id": 99, "description": "Specific", "weight": 1.0, "status": "sent", "city": "Berlin"}
+    raw_data = {
+        "id": 19,
+        "description": "P1",
+        "weight": 1.0,
+        "status": "SENT",
+        "idDeliveryMan": None,
+        "idClient": 10,
+        "idRecipient": 20,
+        "DestinationCity": "Paris",
+        "code": "ABC-123"
+    }
+    mock_get_one.return_value = [ParcelResponseSchema(**raw_data).model_dump()]
 
     response = client.get("/parcels/99")
 
