@@ -42,7 +42,7 @@ class LogisticManagerModel():
         parcel = parcel_model.getParcel(parcel_id)
         address = self.get_client_adresse(parcel)
         city = address.split(' ')[0].strip()
-
+        MAX_WEIGHT = 100
         total_weight_column = func.coalesce(func.sum(Parcel.weight), 0).label("total_weight")
 
         delivery_men = (
@@ -56,6 +56,7 @@ class LogisticManagerModel():
             )
             .filter(DeliveryMan.address.like(f"{city}%"))
             .group_by(DeliveryMan.id,User.id)
+            .having(total_weight_column + parcel.weight <= MAX_WEIGHT)
             .order_by(total_weight_column.asc())
             .all()
         )
