@@ -2,6 +2,8 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.db.database import Base, get_db
+from entities import User
+from auth.security import hash_password, create_access_token
 from main import app
 import uuid
 # Create engine once
@@ -75,3 +77,30 @@ def override_db(db_session):
     app.dependency_overrides[get_db] = _get_db
     yield
     app.dependency_overrides.clear()
+
+
+
+
+@pytest.fixture
+def logistics_manager_user(db_session):
+    user = User(
+        first_name="Test",
+        last_name="Admin",
+        email="manager@test.com",
+        password=hash_password("password"),
+        role="logistics_manager",
+        phone="0000"
+    )
+
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+
+    return user
+
+
+@pytest.fixture
+def logistics_manager_token(logistics_manager_user):
+    return create_access_token(
+        {"sub": str(logistics_manager_user.id), "role": 'logistics_manager'}
+    )
