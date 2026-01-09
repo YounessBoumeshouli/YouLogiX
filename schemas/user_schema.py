@@ -21,3 +21,17 @@ class DeliveryManCreateSchema(UserCreateSchema):
     role: Literal["delivery_man"]
     address: str
     vehicule: Literal["CAR", "MOTORBIKE"]
+
+
+class UserLoginSchema(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class UserLoginResponseSchema(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class UserTokenSchema(BaseModel):
+    token: str

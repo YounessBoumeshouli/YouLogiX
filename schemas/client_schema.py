@@ -13,4 +13,3 @@ class ClientResponseSchema(BaseModel):
     email: str
     address: str
     phone: str
-    password: str
