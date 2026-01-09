@@ -25,6 +25,14 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
+  tests:
+    build: .
+    command: pytest -vv --showlocals tests/test_parcel_router.py
+    depends_on:
+      - postgres
+    env_file: .env
+    volumes:
+      - .:/app
 
 volumes:
   pgdata:

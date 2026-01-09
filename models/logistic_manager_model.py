@@ -1,5 +1,5 @@
-from sqlalchemy.sql.functions import func
-
+from sqlalchemy import func , and_
+from loguru import logger
 from schemas.delivery_man import DeliveryManCreate
 from sqlalchemy.orm.session import Session
 
@@ -12,7 +12,7 @@ from schemas.delivery_man import DeliveryManCreate
 from models.parcel_model import ParcelModel
 import models.client_model as ClientModel
 
-from entities import LogisticsManager
+from entities import LogisticsManager, User
 from entities.enums.vehicule_enum import EnumVehicule
 
 
@@ -36,44 +36,58 @@ class LogisticManagerModel():
     def get_client_adresse(self, parcel: Parcel):
         result =  self.db.query(Client.address).filter(Client.id == parcel.idClient).first()
         return result[0]
-    def GetDisponibleDeliveryMan(self,parcel_id):
-        parcel_model  = ParcelModel(self.db)
-        parcel =  parcel_model.getParcel(parcel_id)
+
+    def GetDisponibleDeliveryMan(self, parcel_id):
+        parcel_model = ParcelModel(self.db)
+        parcel = parcel_model.getParcel(parcel_id)
         address = self.get_client_adresse(parcel)
         city = address.split(' ')[0].strip()
-        total_weight_column = func.sum(Parcel.weight).label("total_weight")
+
+        total_weight_column = func.coalesce(func.sum(Parcel.weight), 0).label("total_weight")
+
         delivery_men = (
-            self.db.query(
-                DeliveryMan,
-                total_weight_column
+            self.db.query(DeliveryMan, total_weight_column)
+            .outerjoin(
+                Parcel,
+                and_(
+                    DeliveryMan.id == Parcel.idDeliveryMan,
+                    Parcel.status == EnumStatus.APPROVED
+                )
             )
-            .join(Parcel, DeliveryMan.id == Parcel.idDeliveryMan)
-            .filter(Parcel.status == EnumStatus.APPROVED )
+            .filter(DeliveryMan.address.like(f"{city}%"))
+            .group_by(DeliveryMan.id,User.id)
+            .order_by(total_weight_column.asc())
+            .all()
+        )
+
+
+        if delivery_men:
+            for row in delivery_men:
+                if row[0].vehicule == EnumVehicule.MOTORBIKE:
+                    return row[0]
+            return delivery_men[0][0]
+
+        global_delivery_men = (
+            self.db.query(DeliveryMan, total_weight_column)
+            .outerjoin(Parcel, DeliveryMan.id == Parcel.idDeliveryMan)
+            .filter(Parcel.status == EnumStatus.APPROVED)
             .group_by(DeliveryMan)
             .order_by(total_weight_column.asc())
             .all()
         )
-        if delivery_men :
-            choosingDeliveryMan = delivery_men[0][0]
 
-            for row in delivery_men:
-                delivery_man = row[0]
-                total_weight = row[1]
-
-                if delivery_man.vehicule == EnumVehicule.MOTORBIKE:
-                    return delivery_man
-
-            return choosingDeliveryMan
+        if global_delivery_men:
+            logger.info(f"Global delivery men found: {global_delivery_men}")
+            return global_delivery_men[0][0]
         else :
-            return 'there is available delivery man for this area'
+            logger.error("no delivery man is available")
+            return None
 
     def assignParcel(self, parcel_id):
         delivery_man = self.GetDisponibleDeliveryMan(parcel_id)
         if delivery_man and hasattr(delivery_man, 'id'):
             parcel_model = ParcelModel(self.db)
-            # Perform the assignment
             return parcel_model.assignToDeliveryMan(parcel_id, delivery_man.id)
         else:
-            # 2. Logic for when no delivery man is found
             print(f"No delivery man available for parcel {parcel_id}")
             return delivery_man
