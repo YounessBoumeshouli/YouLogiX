@@ -19,34 +19,69 @@ client = TestClient(app)
 
 ## --- Tests for ParcelController Routes ---
 
+from schemas.parcel_schema import ParcelCreateSchema , ParcelResponseSchema
+
+
 @patch("controllers.parcel_controller.ParcelController.create_parcel")
-def test_create_parcel(valid_client):
-    # We use valid_client.id which was just created in the DB
-    parcel_payload = {
+def test_create_parcel(mock_create, valid_client):
+
+    payload_data = {
         "description": "Laptop",
         "weight": 2.5,
-        "idClient": valid_client.id,  # <--- THE KEY FIX
-        "idRecipient": valid_client.id,  # Using same ID for test simplicity
-        "DestinationCity": "Casablanca",
+        "status": "CREATED",
+        "idClient": valid_client.id,
+        "idRecipient": valid_client.id,
+        "DestinationCity": "Casablanca"
     }
 
-    response = client.post("/parcels", json=parcel_payload)
+    ParcelCreateSchema(**payload_data)
 
-    # Assertions
+    mock_create.return_value = {
+        "id": 1,
+        "description": "Laptop",
+        "weight": 2.5,
+        "status": "CREATED",
+        "idDeliveryMan": None,
+        "idClient": valid_client.id,
+        "idRecipient": valid_client.id,
+        "DestinationCity": "Casablanca",
+        "code": "XYZ-123"
+    }
+
+    response = client.post("/parcels", json=payload_data)
+
+    if response.status_code == 422:
+        print(f"Validation Error: {response.json()}")
+
     assert response.status_code == 201
-    assert response.json()["idClient"] == valid_client.id
+    assert response.json()["description"] == "Laptop"
 
 
 @patch("controllers.parcel_controller.ParcelController.get_all_parcels")
 def test_get_all_parcels(mock_get_all):
-    mock_get_all.return_value = [{"id": 1, "description": "P1", "weight": 1.0, "status": "sent", "city": "Paris"}]
+    # Create raw data
+    raw_data = {
+        "id": 1,
+        "description": "P1",
+        "weight": 1.0,
+        "status": "SENT",
+        "idDeliveryMan": None,
+        "idClient": 10,
+        "idRecipient": 20,
+        "DestinationCity": "Paris",
+        "code": "ABC-123"
+    }
+
+    # USE THE SCHEMA: This validates that your mock matches the real structure
+    # .model_dump() converts the Pydantic object back to a dict for the mock
+    mock_get_all.return_value = [ParcelResponseSchema(**raw_data).model_dump()]
 
     response = client.get("/parcels")
 
     assert response.status_code == 200
     assert len(response.json()) == 1
-    mock_get_all.assert_called_once()
-
+    # Verify the API returned data that matches our Schema
+    assert response.json()[0]["code"] == raw_data["code"]
 
 @patch("controllers.parcel_controller.ParcelController.get_parcel")
 def test_get_parcel_by_id(mock_get_one):

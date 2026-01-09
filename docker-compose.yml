@@ -27,10 +27,13 @@ services:
       - .:/app
   tests:
     build: .
-    command: pytest -vv --showlocals tests/test_parcel_router.py
+    command: pytest -vv --showlocals tests
     depends_on:
       - postgres
     env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1  # Ensures logs appear immediately in your terminal
+    tty: true               # Allows for colored output and better formatting
     volumes:
       - .:/app
 
