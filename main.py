@@ -14,6 +14,7 @@ from routes.delivery_man_route import router as delivery_man_router
 from models.deliveryman_model import DeliveryManModel
 from models.parcel_model import ParcelModel
 from models.client_model import ClientModel
+from models.logistic_manager_model import LogisticManagerModel
 
 
 def setup_logging():
@@ -31,6 +32,7 @@ def seed_database():
         DeliveryManModel(db).seed_delivery_men()
         ClientModel(db).seed_clients()
         ParcelModel(db).seed_parcels()
+        LogisticManagerModel(db).seed_logistics_managers()
         logger.info("✅ Seeding complete.")
     except Exception as e:
         logger.error(f"❌ Seed error: {e}")

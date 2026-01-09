@@ -4,8 +4,6 @@ from pydantic import ConfigDict
 class ParcelCreateSchema(BaseModel):
     description: str
     weight: float
-    status: str
-    idClient: int
     idRecipient: int
     DestinationCity: str
 

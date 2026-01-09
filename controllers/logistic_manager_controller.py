@@ -7,5 +7,8 @@ class LogisticMangerController:
         self.logistic_manager_model  = LogisticManagerModel(db)
     def seed_logistic_manager(self):
         self.logistic_manager_model.seed_logistic_manager()
+    def fetch_percels(self ):
+        percels = self.logistic_manager_model.get_all_parcels()
+        return percels
     def assignParcel(self , parcel_id ):
         return self.logistic_manager_model.assignParcel(parcel_id)

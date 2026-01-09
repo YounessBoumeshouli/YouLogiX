@@ -14,9 +14,9 @@ class ParcelController:
 
     # Create a parcel
 
-    def create_parcel(self, payload: ParcelCreateSchema):
+    def create_parcel(self, client_id: int, payload: ParcelCreateSchema):
         code = randint(1000, 999999999)
-        return self.model.createParcel(**payload.model_dump(), code=code)
+        return self.model.createParcel(client_id=client_id, **payload.model_dump(), code=code)
 
 
 
@@ -57,10 +57,16 @@ class ParcelController:
 
     # Update a parcel 
 
-    def update_parcel(self, parcel_id: int, payload: ParcelUpdateSchema):
+    def update_parcel(self, current_id, parcel_id: int, payload: ParcelUpdateSchema):
 
         parcel = self.model.getParcelById(parcel_id)
 
+        if parcel.idClient != current_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="You are not authorized to perform this action"
+            )
+        
         if not parcel:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

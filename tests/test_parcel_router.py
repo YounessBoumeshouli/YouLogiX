@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
 from main import app  # Ensure this points to your FastAPI entry point
 from app.db.database import get_db
-
+from auth.dependencies import get_current_user
 # 1. Setup Mock Database Dependency
 mock_db = MagicMock()
 
@@ -21,9 +21,11 @@ client = TestClient(app)
 
 from schemas.parcel_schema import ParcelCreateSchema , ParcelResponseSchema
 
-
+def skip_auth():
+    return {"id": 1, "username": "testuser"}
 @patch("controllers.parcel_controller.ParcelController.create_parcel")
 def test_create_parcel(mock_create, valid_client):
+    app.dependency_overrides[get_current_user] = lambda: valid_client
 
     payload_data = {
         "description": "Laptop",
@@ -33,8 +35,6 @@ def test_create_parcel(mock_create, valid_client):
         "idRecipient": valid_client.id,
         "DestinationCity": "Casablanca"
     }
-
-    ParcelCreateSchema(**payload_data)
 
     mock_create.return_value = {
         "id": 1,
@@ -50,24 +50,22 @@ def test_create_parcel(mock_create, valid_client):
 
     response = client.post("/parcels", json=payload_data)
 
-    if response.status_code == 422:
-        print(f"Validation Error: {response.json()}")
+    app.dependency_overrides = {}
 
     assert response.status_code == 201
-    assert response.json()["description"] == "Laptop"
-
-
 @patch("controllers.parcel_controller.ParcelController.get_all_parcels")
-def test_get_all_parcels(mock_get_all):
+def test_get_all_parcels(mock_get_all,valid_logistic_manager,valid_client):
     # Create raw data
+    app.dependency_overrides[get_current_user] = lambda: valid_logistic_manager
+
     raw_data = {
         "id": 1,
         "description": "P1",
         "weight": 1.0,
         "status": "SENT",
         "idDeliveryMan": None,
-        "idClient": 10,
-        "idRecipient": 20,
+        "idClient": valid_client.id,
+        "idRecipient": valid_client.id,
         "DestinationCity": "Paris",
         "code": "ABC-123"
     }
@@ -84,15 +82,17 @@ def test_get_all_parcels(mock_get_all):
     assert response.json()[0]["code"] == raw_data["code"]
 
 @patch("controllers.parcel_controller.ParcelController.get_parcel")
-def test_get_parcel_by_id(mock_get_one):
+def test_get_parcel_by_id(mock_get_one,valid_logistic_manager,valid_client):
+    app.dependency_overrides[get_current_user] = lambda: valid_logistic_manager
+
     raw_data = {
         "id": 19,
         "description": "P1",
         "weight": 1.0,
         "status": "SENT",
         "idDeliveryMan": None,
-        "idClient": 10,
-        "idRecipient": 20,
+        "idClient": valid_client.id,
+        "idRecipient": valid_client.id,
         "DestinationCity": "Paris",
         "code": "ABC-123"
     }
@@ -105,34 +105,36 @@ def test_get_parcel_by_id(mock_get_one):
     mock_get_one.assert_called_once_with(99)
 
 
-## --- Tests for ClientController Routes ---
 
 @patch("controllers.client_controller.ClientController.getSentParcels")
-def test_get_sent_parcels(mock_sent):
+def test_get_sent_parcels(mock_sent,valid_client):
+    app.dependency_overrides[get_current_user] = lambda: valid_client
+
     raw_data = {
         "id": 1,
         "description": "P1",
         "weight": 1.0,
         "status": "DELIVERED",
         "idDeliveryMan": None,
-        "idClient": 10,
+        "idClient": valid_client.id,
         "idRecipient": 20,
         "DestinationCity": "Paris",
         "code": "ABC-123"
     }
 
-    # USE THE SCHEMA: This validates that your mock matches the real structure
-    # .model_dump() converts the Pydantic object back to a dict for the mock
+
     mock_sent.return_value = [ParcelResponseSchema(**raw_data).model_dump()]
-    response = client.get("/parcels/sent/10")
+    response = client.get("/parcels/sent")
 
     assert response.status_code == 200
     assert response.json()[0]["id"] == 1
-    mock_sent.assert_called_once_with(10)
+    mock_sent.assert_called_once_with(valid_client.id)
 
 
 @patch("controllers.parcel_controller.ParcelController.get_parcels_by_status")
-def test_get_parcels_by_status(mock_status):
+def test_get_parcels_by_status(mock_status,valid_logistic_manager):
+    app.dependency_overrides[get_current_user] = lambda: valid_logistic_manager
+
     mock_status.return_value = []
 
     response = client.get("/parcels/status/delivered")

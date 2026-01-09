@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from loguru import logger
 from entities import Client, User
+from auth.security import hash_password
 
 
 class ClientModel:
@@ -58,7 +59,7 @@ class ClientModel:
                     first_name=f"Client {i}",
                     last_name=f"Client {i}",
                     email=f"client{i}@youlogix.com",
-                    password=f"password {i}",
+                    password=hash_password(f"password {i}"),
                     # Now matches: "Marrakech Menara", "Marrakech Gueliz", etc.
                     address=full_address,
                     phone=f"06 649 9333{i}",
