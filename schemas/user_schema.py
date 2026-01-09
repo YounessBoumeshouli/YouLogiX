@@ -2,6 +2,14 @@ from pydantic import BaseModel, EmailStr
 from typing import Literal
 
 
+class UserReadSchema(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone: str
+    role: str
+
+
 class UserCreateSchema(BaseModel):
     first_name: str
     last_name: str

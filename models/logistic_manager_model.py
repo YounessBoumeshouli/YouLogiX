@@ -2,6 +2,7 @@ from sqlalchemy import func , and_
 from loguru import logger
 from schemas.delivery_man import DeliveryManCreate
 from sqlalchemy.orm.session import Session
+from auth.security import hash_password
 
 from entities.delivery_man_entity import DeliveryMan
 from entities.enums.status_enum import EnumStatus
@@ -91,3 +92,28 @@ class LogisticManagerModel():
         else:
             print(f"No delivery man available for parcel {parcel_id}")
             return delivery_man
+
+
+    def seed_logistics_managers(self):
+        if self.db.query(LogisticsManager).count() == 0:
+            print("🌱 Initialisation d'un admin ...")
+
+            new_admin = LogisticsManager(
+                first_name=f"Logistics",
+                last_name=f"Manager",
+                email=f"admin@youlogix.com",
+                password=hash_password("pass1234"),
+                phone=f"06 111 1111111",
+                role="logistics_manager"
+            )
+
+            self.db.add(new_admin)
+            self.db.commit()
+
+        else:
+            print("ℹ️ L'admin existe déjà, skipping seed.")
+
+
+
+    def get_all_users(self):
+        return self.db.query(User).all()

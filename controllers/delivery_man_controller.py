@@ -8,11 +8,25 @@ class DeliveryManController:
     def __init__(self, db:Session):
         self.db = db
         self.delivery_man_model  = DeliveryManModel(db)
+
+
+
+    def get_all_delivery_men(self):
+        return self.delivery_man_model.get_all()
+    
+
+
     def seed_delivery_men(self):
         self.delivery_man_model.seed_delivery_men()
+
+
+
     def fetch_percels(self  ):
         percels = self.delivery_man_model.get_all_parcels()
         return [1,2,4]
+    
+
+
     def isAssigned(self ,delivery_man_id ,  parcel_id)->bool:
         parcel =  Parcel.getParcelByDeliveryMan(delivery_man_id)
         return False if parcel.status == EnumStatus.LIVRED else True
