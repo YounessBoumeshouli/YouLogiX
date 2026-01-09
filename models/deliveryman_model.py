@@ -9,11 +9,18 @@ from schemas.delivery_man import DeliveryManCreate
 import models.parcel_model as Parcel
 import models.client_model as Client
 from schemas.parcel_schema import ParcelResponseSchema
+from auth.security import hash_password
+
 
 
 class DeliveryManModel:
     def __init__(self, db: Session):
         self.db = db
+
+
+    def get_all(self):
+        return self.db.query(DeliveryMan).all()
+    
 
     def create(self, first_name: str, last_name: str, email: str, address: str, phone: str, password: str, role: str, vehicule: str):
         delivery_man = DeliveryMan(
@@ -57,7 +64,7 @@ class DeliveryManModel:
                     last_name=f"Livreur {i}",
                     email=f"delivery{i}@youlogix.com",
                     phone=f"06 549 9333{i}",
-                    password=f"password {i}",
+                    password=hash_password(f"password {i}"),
                     role="delivery_man",
                     address=f"{city} {zone}",  # "Marrakech Menara" format
                     vehicule=EnumVehicule.CAR if i % 2 == 0 else EnumVehicule.MOTORBIKE

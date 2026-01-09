@@ -15,13 +15,13 @@ class ParcelModel :
 
 
 
-    def createParcel(self, description: str, weight: float, idClient: int, idRecipient: int, DestinationCity: str, code: str , status  :EnumStatus =  EnumStatus.CREATED):
+    def createParcel(self, client_id: str, description: str, weight: float, idRecipient: int, DestinationCity: str, code: str , status  :EnumStatus =  EnumStatus.CREATED):
         parcel = Parcel(
             description = description,
             weight = weight,
             status = status,
             idDeliveryMan = None,
-            idClient = idClient,
+            idClient = client_id,
             idRecipient = idRecipient,
             DestinationCity = DestinationCity,
             code = code

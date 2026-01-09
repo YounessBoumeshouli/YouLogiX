@@ -12,6 +12,8 @@ from schemas.user_schema import (
 )
 from auth.dependencies import get_current_user, require_roles
 
+
+
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
@@ -37,13 +39,6 @@ def log_user_in(
 
 
 @router.post('/user')
-def get_current_user(payload: UserTokenSchema, db: Session = Depends(get_db)):
+def get_current_user_details(payload: UserTokenSchema, db: Session = Depends(get_db)):
     return get_current_user(payload.token, db)
 
-
-
-# @router.get("/admin/dashboard")
-# def admin_dashboard(
-#     user : User = Depends(require_roles("client"))
-# ):
-#     return {"ok": True, "user": user}
