@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-
+from pydantic import ConfigDict
 class ParcelCreateSchema(BaseModel):
     description: str
     weight: float
@@ -30,5 +30,4 @@ class ParcelSchema(BaseModel):
 class ParcelResponseSchema(ParcelSchema):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

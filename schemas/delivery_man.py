@@ -1,7 +1,7 @@
 # app/schemas/delivery_man.py
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
-
+from pydantic import ConfigDict
 # Champs communs à toutes les opérations
 class DeliveryManBase(BaseModel):
     address: str = Field(..., min_length=2, max_length=50)
@@ -15,5 +15,4 @@ class DeliveryManCreate(DeliveryManBase):
 class DeliveryManResponse(DeliveryManBase):
     id: int
 
-    class ConfigDict:
-        from_attributes = True # Permet à Pydantic de lire les modèles SQLAlchemy
+    model_config = ConfigDict(from_attributes=True)

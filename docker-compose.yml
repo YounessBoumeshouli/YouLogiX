@@ -25,6 +25,17 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
+  tests:
+    build: .
+    command: pytest -vv --showlocals tests
+    depends_on:
+      - postgres
+    env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1  # Ensures logs appear immediately in your terminal
+    tty: true               # Allows for colored output and better formatting
+    volumes:
+      - .:/app
 
 volumes:
   pgdata:
