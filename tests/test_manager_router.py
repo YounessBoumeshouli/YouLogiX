@@ -1,6 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
+
+from auth.dependencies import get_current_user
 from main import app  # Import your FastAPI app instance
 from app.db.database import get_db
 
@@ -43,7 +45,9 @@ def test_show_parcels(mock_fetch):
 
 
 @patch("controllers.logistic_manager_controller.LogisticMangerController.assignParcel")
-def test_assign_parcel_to_delivery_man(mock_assign):
+def test_assign_parcel_to_delivery_man(mock_assign,valid_logistic_manager):
+    app.dependency_overrides[get_current_user] = lambda: valid_logistic_manager
+
     """Tests the GET /parcels/{parcel_id}/assign_to_delivery_man route"""
     parcel_id = "123"
     mock_assign.return_value = {"status": "success", "parcel_id": parcel_id}
