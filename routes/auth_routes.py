@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from controllers.auth_controller import AuthController
+from entities import User
 from schemas.user_schema import (
     ClientCreateSchema,
     DeliveryManCreateSchema,
@@ -9,6 +10,7 @@ from schemas.user_schema import (
     UserLoginResponseSchema,
     UserTokenSchema
 )
+from auth.dependencies import get_current_user, require_roles
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -36,13 +38,12 @@ def log_user_in(
 
 @router.post('/user')
 def get_current_user(payload: UserTokenSchema, db: Session = Depends(get_db)):
-    controller = AuthController()
-    return controller.get_current_user(payload.token, db)
+    return get_current_user(payload.token, db)
 
 
 
 # @router.get("/admin/dashboard")
 # def admin_dashboard(
-#     user = Depends(AuthController().require_role("admin"))
+#     user : User = Depends(require_roles("client"))
 # ):
-#     return {"ok": True}
+#     return {"ok": True, "user": user}
