@@ -5,9 +5,4 @@ tests/__pycache__
 __pycache__
 /.idea/
 logs
-<<<<<<< HEAD
 test.db
-=======
-test.db
-
->>>>>>> 0e09ee1cf8f601b06ffeac73155a0985b73e6f9e

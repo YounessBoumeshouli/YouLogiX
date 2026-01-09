@@ -6,7 +6,8 @@ uvicorn[standard]
 pytest
 psycopg2-binary
 python-dotenv
-fastapi-users[sqlalchemy]
+python-jose
+passlib[bcrypt]
 loguru
 pytest
 httpx
