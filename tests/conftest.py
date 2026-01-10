@@ -6,7 +6,7 @@ from entities import User
 from auth.security import hash_password, create_access_token
 from main import app
 import uuid
-# Create engine once
+
 engine = create_engine("sqlite:///./test.db", connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 from entities.client_entity import Client
@@ -14,7 +14,6 @@ from entities.client_entity import Client
 
 @pytest.fixture
 def valid_client(db_session):
-    # Now uuid will work!
     unique_email = f"test_{uuid.uuid4().hex[:6]}@example.com"
 
     new_client = Client(
@@ -24,7 +23,7 @@ def valid_client(db_session):
         email=unique_email,
         password="hashed_password_123",
         address="123 Rue Marrakech",
-        role="client"  # Ensure this matches your DB schema requirement
+        role="client"
     )
     db_session.add(new_client)
     db_session.commit()
@@ -32,7 +31,6 @@ def valid_client(db_session):
     return new_client
 @pytest.fixture
 def valid_logistic_manager(db_session):
-    # Now uuid will work!
     unique_email = f"test_{uuid.uuid4().hex[:6]}@example.com"
 
     new_client = Client(
@@ -42,7 +40,7 @@ def valid_logistic_manager(db_session):
         email=unique_email,
         password="hashed_password_123",
         address="123 Rue Marrakech",
-        role="logistics_manager"  # Ensure this matches your DB schema requirement
+        role="logistics_manager"
     )
     db_session.add(new_client)
     db_session.commit()
@@ -50,22 +48,18 @@ def valid_logistic_manager(db_session):
     return new_client
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():
-    # Create tables
     Base.metadata.create_all(bind=engine)
     yield
-    # ONLY drop if the tables exist
-    Base.metadata.drop_all(bind=engine, checkfirst=True) # Add checkfirst=True
+    Base.metadata.drop_all(bind=engine, checkfirst=True)
 
 @pytest.fixture
 def db_session():
-    # Start a transaction
     connection = engine.connect()
     transaction = connection.begin()
     session = TestingSessionLocal(bind=connection)
 
     yield session
 
-    # Rollback changes so the next test starts with a clean DB
     session.close()
     transaction.rollback()
     connection.close()

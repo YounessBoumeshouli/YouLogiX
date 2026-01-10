@@ -16,7 +16,6 @@ class UserCreateSchema(BaseModel):
     email: EmailStr
     password: str
     phone: str
-    # role: Literal["client", "delivery_man", "logistics_manager"]
 
 
 class ClientCreateSchema(UserCreateSchema):
