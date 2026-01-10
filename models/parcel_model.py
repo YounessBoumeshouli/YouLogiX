@@ -93,6 +93,9 @@ class ParcelModel :
         if not parcel:
             return None
         
+        parcel.status = new_status
+        self.db.commit()
+        
         history = HistoricalStatus(
             statut = new_status,
             idParcel = parcel_id

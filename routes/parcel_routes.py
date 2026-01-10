@@ -5,6 +5,7 @@ from entities import User
 from auth.dependencies import require_roles
 from controllers.parcel_controller import ParcelController
 from controllers.client_controller import ClientController
+from controllers.delivery_man_controller import DeliveryManController
 from schemas.parcel_schema import (
     ParcelCreateSchema,
     ParcelResponseSchema,
@@ -94,3 +95,24 @@ def get_parcels_by_status(
 ):
     controller = ParcelController(db)
     return controller.get_parcels_by_status(status)
+
+
+
+@router.get('/delivery', response_model=list[ParcelResponseSchema])
+def get_parcels_to_deliver(
+    db: Session = Depends(get_db),
+    user : User = Depends(require_roles("delivery_man"))
+):
+    controller = DeliveryManController(db)
+    return controller.fetch_my_parcels(user.id)
+
+
+
+@router.get('/deliver/{parcel_id}')
+def deliver_parcel(
+    parcel_id: int,
+    db: Session = Depends(get_db),
+    user : User = Depends(require_roles("delivery_man"))
+):
+    controller = DeliveryManController(db)
+    return controller.deliverParcel(user.id, parcel_id)
